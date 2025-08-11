@@ -129,7 +129,7 @@ function play() {
     } else {
       // Invalid move: notify and still advance moveIndex (or keep it the same if you want retry)
       console.log(
-        `Invalid move by player ${currentPlayer} at (${row}, ${col}). Skipping move.`
+        `Invalid move by player ${currentPlayer} at (${row}, ${col}). try again.`
       );
       moveIndex++;
     }
