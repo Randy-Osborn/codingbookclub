@@ -1,0 +1,13 @@
+# Python
+*.pyc
+__pycache__/
+*.db
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+.env
+
+# Logs
+*.log
