@@ -1,4 +1,4 @@
-import { initDb, listTasks, addTask, deleteTask, completeTask, clearTasks } from "@/lib/todoDb";
+import { initDb, listTasks, addTask, deleteTask, clearTasks, toggleTask } from "@/lib/todoDb";
 
 // Ensure DB exists
 await initDb();
@@ -25,7 +25,7 @@ export async function PATCH(request) {
   if (!id) {
     return Response.json({ error: "ID is required" }, { status: 400 });
   }
-  const success = await completeTask(id);
+  const success = await toggleTask(id);
   return Response.json({ success });
 }
 

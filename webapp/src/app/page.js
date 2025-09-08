@@ -10,7 +10,7 @@ export default function HomePage() {
     <div className="flex flex-col items-center justify-center space-y-4">
       <h2 className="text-3xl font-bold">Welcome!</h2>
       <p className="text-gray-500 dark:text-gray-300">
-        A weekly showcase of small projects.
+        A showcase of small projects.
       </p>
       <ul className="space-y-2">
         {projects.map((project, idx) => (

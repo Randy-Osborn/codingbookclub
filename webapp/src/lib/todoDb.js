@@ -33,10 +33,13 @@ export async function listTasks() {
   return db.all("SELECT * FROM tasks");
 }
 
-// Mark a task complete
-export async function completeTask(id) {
+// Toggle a task's completed status
+export async function toggleTask(id) {
   const db = await openDb();
-  const result = await db.run("UPDATE tasks SET completed = 1 WHERE id = ?", [id]);
+  const result = await db.run(
+    "UPDATE tasks SET completed = NOT completed WHERE id = ?",
+    [id]
+  );
   return result.changes > 0;
 }
 
