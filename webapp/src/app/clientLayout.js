@@ -13,30 +13,25 @@ export default function ClientLayout({ children }) {
 
 // This is just a local component inside the same file
 function HeaderAndContent({ children }) {
-  const { data: session } = useSession(); // ✅ safe here
+  const { data: session } = useSession();
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-      {/* Header */}
-      <header className="p-6 bg-gray-200 dark:bg-gray-800 flex items-center justify-between shadow-md">
-        <h1 className="text-3xl font-bold">Coding Book Club</h1>
-        <nav className="flex gap-4">
-          <Link
-            href="/"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+      <header className="p-6 bg-[var(--header-bg)] flex justify-between items-center shadow-md">
+        <Link
+          href="/"
+          className="text-3xl font-bold hover:text-[var(--accent-hover)] transition-colors"
+        >
+          Coding Book Club
+        </Link>
+        {session && (
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="px-4 py-2 text-lg text-white rounded-lg hover:text-[var(--accent-hover)] transition-colors"
           >
-            Home
-          </Link>
-
-          {session && (
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
-          )}
-        </nav>
+            Logout
+          </button>
+        )}
       </header>
 
       {/* Main Content */}
