@@ -21,6 +21,7 @@ export default function HomePage() {
 const projects = [
   { name: "ToDo App", path: "/todo", description: "A task manager built with React." },
   { name: "Tic Tac Toe", path: "/tictactoe", description: "A fun two-player game." },
+  { name: "DragonsHoard Treasure Generator", path: "/dragonshoard", description: "Generate random treasure for your RPG adventures." },
 ];
 
 return (

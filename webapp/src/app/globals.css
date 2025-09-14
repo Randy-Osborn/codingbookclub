@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@import "tailwindcss";
 
+/* Default (dark theme) */
 :root {
   --background: #1E1E2F;
   --foreground: #EAEAEA;
@@ -11,16 +13,17 @@
   --danger: #EF5350;
 }
 
-@media (prefers-color-scheme: dark) {
+/* Light theme */
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #1E1E2F;
-    --foreground: #EAEAEA;
-    --foreground-secondary: #B0B0C3;
-    --header-bg: #24243A;
-    --card-bg: #2A2A3D;
-    --accent: #9D4EDD;
-    --accent-hover: #C77DFF;
-    --danger: #EF5350;
+    --background: #F3F0FF;          /* very light purple background */
+    --foreground: #1E1E2F;          /* dark text for readability */
+    --foreground-secondary: #5C5470;/* subtle muted purple for secondary text */
+    --header-bg: #E0D9FF;           /* light purple header */
+    --card-bg: #FFFFFF;              /* white cards for contrast */
+    --accent: #9D4EDD;               /* same brand purple */
+    --accent-hover: #C77DFF;         /* lighter purple hover */
+    --danger: #EF5350;               /* same red for alerts */
   }
 }
 
