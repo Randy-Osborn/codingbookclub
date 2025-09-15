@@ -13,17 +13,34 @@ export default function DragonsHoardPage() {
   const [selectedApi, setSelectedApi] = useState(null);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [itemDetails, setItemDetails] = useState(null);
 
   async function fetchApi(resource) {
     setLoading(true);
     setSelectedApi(resource);
     setResults(null);
+    setItemDetails(null); // Clear details when switching resource
     try {
       const res = await fetch(`/api/dragonshoard/${resource}`);
       const data = await res.json();
       setResults(data.results || data);
     } catch (e) {
       setResults({ error: "Failed to fetch data." });
+    }
+    setLoading(false);
+  }
+
+  async function fetchItemDetails(index) {
+    setLoading(true);
+    setItemDetails(null);
+    try {
+      const res = await fetch(
+        `/api/dragonshoard/${selectedApi}?index=${index}`
+      );
+      const data = await res.json();
+      setItemDetails(data);
+    } catch (e) {
+      setItemDetails({ error: "Failed to fetch item details." });
     }
     setLoading(false);
   }
@@ -64,35 +81,65 @@ export default function DragonsHoardPage() {
         <h2 className="text-2xl font-semibold mb-4 text-[#b87333]">
           D&D 5e API Explorer
         </h2>
-        <ul className="mb-4">
-          {apiOptions.map((opt) => (
-            <li key={opt.resource} className="mb-2">
-              <button
-                onClick={() => fetchApi(opt.resource)}
-                className={`px-4 py-2 rounded ${
-                  selectedApi === opt.resource
-                    ? "bg-[#e5e4e2] text-[#b87333]"
-                    : "bg-[#b87333] text-white"
-                } hover:bg-[#e5e4e2] hover:text-[#b87333] transition`}
-              >
+        {/* Resource Selector Dropdown */}
+        <div className="mb-4">
+          <select
+            className="w-full p-2 rounded bg-gray-900 text-[#e5e4e2]"
+            value={selectedApi || ""}
+            onChange={(e) => {
+              const resource = e.target.value;
+              if (resource) fetchApi(resource);
+            }}
+          >
+            <option value="" disabled>
+              Select resource...
+            </option>
+            {apiOptions.map((opt) => (
+              <option key={opt.resource} value={opt.resource}>
                 {opt.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+              </option>
+            ))}
+          </select>
+        </div>
         {loading && <p className="text-gray-300">Loading...</p>}
         {results && (
           <div className="text-gray-200 max-h-64 overflow-y-auto">
-            {Array.isArray(results) ? (
-              <ul>
+            {Array.isArray(results) && selectedApi ? (
+              <select
+                className="w-full p-2 rounded bg-gray-900 text-[#e5e4e2] mb-4"
+                defaultValue=""
+                onChange={(e) => {
+                  const index = e.target.value;
+                  if (index) fetchItemDetails(index);
+                }}
+              >
+                <option value="" disabled>
+                  {`Select ${
+                    apiOptions.find((opt) => opt.resource === selectedApi)
+                      ?.label || "item"
+                  }...`}
+                </option>
                 {results.map((item) => (
-                  <li key={item.index || item.name}>{item.name}</li>
+                  <option key={item.index} value={item.index}>
+                    {item.name}
+                  </option>
                 ))}
-              </ul>
+              </select>
             ) : results.error ? (
               <p className="text-red-400">{results.error}</p>
             ) : (
               <pre>{JSON.stringify(results, null, 2)}</pre>
+            )}
+          </div>
+        )}
+        {itemDetails && (
+          <div className="mt-4 bg-gray-700 p-4 rounded max-h-64 overflow-auto">
+            {itemDetails.error ? (
+              <p className="text-red-400">{itemDetails.error}</p>
+            ) : (
+              <pre className="text-gray-200 text-sm whitespace-pre-wrap break-words">
+                {JSON.stringify(itemDetails, null, 2)}
+              </pre>
             )}
           </div>
         )}
