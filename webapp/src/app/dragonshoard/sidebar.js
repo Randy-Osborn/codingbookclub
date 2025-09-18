@@ -5,7 +5,12 @@ const apiOptions = [
   { label: "All Magic Items", resource: "magic-items" },
 ];
 
-export default function Sidebar({ onSelectCategory, onSelectAll }) {
+export default function Sidebar({
+  onSelectCategory,
+  onSelectAll,
+  selectedSidebar,
+  setSelectedSidebar,
+}) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -21,29 +26,44 @@ export default function Sidebar({ onSelectCategory, onSelectAll }) {
   }, []);
 
   return (
-    <aside className="w-1/5 bg-gray-900 p-6 text-[#e5e4e2] overflow-y-auto">
+    <aside className="w-64 bg-gray-900 p-6 text-[#e5e4e2] overflow-y-auto">
       {loading && <p className="text-gray-300">Loading...</p>}
       <div className="mb-6">
-        {apiOptions.map((opt) => (
-          <button
-            key={opt.resource}
-            className="block w-full text-left font-bold text-[#b87333] hover:underline mb-2"
-            onClick={() => onSelectAll(opt.resource)}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-      <div className="mb-6">
-        <h2 className="text-lg font-bold mb-4 text-[#b87333]">
-          Equipment Categories
+        <h2 className="text-xl font-bold mb-4 text-[#b87333]">
+          Equipment
         </h2>
         <ul>
+          {/* All Equipment and All Magic Items at the top, not bold */}
+          {apiOptions.map((opt) => (
+            <li key={opt.resource}>
+              <button
+                className={`hover:underline w-full text-left text-base text-[#e5e4e2] ${
+                  selectedSidebar === opt.resource
+                    ? "border border-[#b87333] bg-gray-800 text-[#b87333]"
+                    : ""
+                }`}
+                onClick={() => {
+                  setSelectedSidebar(opt.resource);
+                  onSelectAll(opt.resource);
+                }}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+          {/* Equipment categories below */}
           {categories.map((cat) => (
             <li key={cat.index}>
               <button
-                className="hover:underline"
-                onClick={() => onSelectCategory(cat.index)}
+                className={`hover:underline w-full text-left text-base text-[#e5e4e2] ${
+                  selectedSidebar === cat.index
+                    ? "border border-[#b87333] bg-gray-800 text-[#b87333] font-bold"
+                    : ""
+                }`}
+                onClick={() => {
+                  setSelectedSidebar(cat.index);
+                  onSelectCategory(cat.index);
+                }}
               >
                 {cat.name}
               </button>

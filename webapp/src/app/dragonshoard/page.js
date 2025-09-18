@@ -9,6 +9,8 @@ export default function DragonsHoardPage() {
   const [itemList, setItemList] = useState([]);
   const [itemDetails, setItemDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [selectedSidebar, setSelectedSidebar] = useState(null);
 
   // When a category is selected
   async function handleSelectCategory(categoryIndex) {
@@ -34,6 +36,7 @@ export default function DragonsHoardPage() {
 
   // When an item is selected from the list
   async function handleSelectItem(index, resource = "equipment") {
+    setSelectedItemIndex(index);
     setLoading(true);
     setItemDetails(null);
     const res = await fetch(`/api/dragonshoard/${resource}?index=${index}`);
@@ -45,20 +48,24 @@ export default function DragonsHoardPage() {
   return (
     <main className="flex min-h-screen w-full flex-row">
       <Sidebar
+        selectedSidebar={selectedSidebar}
+        setSelectedSidebar={setSelectedSidebar}
         onSelectCategory={handleSelectCategory}
         onSelectAll={handleSelectAll}
       />
-      <section className="flex flex-1 flex-col bg-gray-800">
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-[#b87333] to-[#e5e4e2] bg-clip-text text-transparent text-center">
-          Dragons Hoard
-        </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="mb-6 px-4 py-2 bg-[#b87333] text-white rounded font-semibold hover:bg-[#e5e4e2] hover:text-[#b87333] transition mx-auto block"
-          style={{ fontSize: "1rem" }}
-        >
-          Open Treasure Generator
-        </button>
+      <section className="flex-1 p-12 bg-gray-800">
+        <div className="relative mb-8">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-[#b87333] to-[#e5e4e2] bg-clip-text text-transparent leading-tight text-center">
+            Dragons Hoard
+          </h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#b87333] text-white rounded font-semibold hover:bg-[#e5e4e2] hover:text-[#b87333] transition"
+            style={{ fontSize: "1rem" }}
+          >
+            Open Treasure Generator
+          </button>
+        </div>
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
             <div className="bg-gray-800 rounded-lg p-8 shadow-2xl max-w-xl w-full relative">
@@ -78,12 +85,16 @@ export default function DragonsHoardPage() {
         )}
         <div className="flex flex-1 flex-row items-start">
           {/* Item List Panel */}
-          <div className="w-1.5/5 p-4 border-r border-gray-700">
-            <ul className="inline-block min-w-max">
+          <div className="w-1/4 p-2 border-r border-gray-700">
+            <ul className="inline-block min-w-max text-sm">
               {itemList.map((item) => (
                 <li key={item.index}>
                   <button
-                    className="underline text-[#e5e4e2] hover:text-[#b87333] w-full text-left"
+                    className={`underline text-[#e5e4e2] hover:text-[#b87333] w-full text-left ${
+                      selectedItemIndex === item.index
+                        ? "border border-[#b87333] bg-gray-800 text-[#b87333] font-bold"
+                        : ""
+                    }`}
                     onClick={() =>
                       handleSelectItem(
                         item.index,
@@ -101,7 +112,7 @@ export default function DragonsHoardPage() {
           </div>
           {/* Item Details Panel */}
           {itemDetails && (
-            <div className="w-2/5 p-4">
+            <div className="w-1/3 p-4">
               <ItemCard item={itemDetails} />
             </div>
           )}
