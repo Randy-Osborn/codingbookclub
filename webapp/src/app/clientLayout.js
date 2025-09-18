@@ -35,7 +35,7 @@ function HeaderAndContent({ children }) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 max-w-4xl mx-auto w-full">{children}</main>
+      <main className="flex-1 p-6 w-full h-full">{children}</main>
 
       {/* Footer */}
       <footer className="p-4 text-center text-gray-500 dark:text-gray-400">
