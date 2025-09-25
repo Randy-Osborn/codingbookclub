@@ -93,6 +93,8 @@ Skip auth and display a shared list for quick testing.
 - Item history logs (audit trail of received loot).  
 - UI polish & responsive layouts.  
 - Advanced rarity/weighting logic.  
+- **Note:**  
+  Look into handling and displaying **equipment packs** (e.g., packs that contain multiple items) in the loot generation and item
 
 ---
 

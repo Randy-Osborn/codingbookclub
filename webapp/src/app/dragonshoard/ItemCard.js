@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
-export default function ItemCard({ item }) {
+export default function ItemCard({ item, currentUserId }) {
+  const [added, setAdded] = useState(false);
+  const [error, setError] = useState(null);
+
   if (!item) return null;
 
   // Helper for cost
@@ -16,95 +19,55 @@ export default function ItemCard({ item }) {
       </ul>
     ) : null;
 
+  async function handleAddItem() {
+    setError(null);
+    try {
+      const res = await fetch("/api/dragonshoard/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item, userId: currentUserId }),
+      });
+      if (!res.ok) throw new Error("Failed to add item");
+      setAdded(true);
+    } catch (e) {
+      setError("Could not add item.");
+    }
+  }
+
   return (
-    <div className="bg-gray-700 rounded p-4 mb-4 shadow max-w-xl">
-      <h3 className="text-xl font-bold text-[#b87333] mb-2">{item.name}</h3>
-      <div className="text-sm text-[#e5e4e2] mb-2">
-        {item.equipment_category && (
-          <span>
-            <strong>Category:</strong> {item.equipment_category.name}
-            <br />
-          </span>
-        )}
-        {item.gear_category && (
-          <span>
-            <strong>Gear Category:</strong> {item.gear_category.name}
-            <br />
-          </span>
-        )}
-        {item.vehicle_category && (
-          <span>
-            <strong>Vehicle Category:</strong> {item.vehicle_category}
-            <br />
-          </span>
-        )}
-        {item.rarity && (
-          <span>
-            <strong>Rarity:</strong> {item.rarity.name}
-            <br />
-          </span>
-        )}
-        {item.cost && (
-          <span>
-            <strong>Cost:</strong> {renderCost(item.cost)}
-            <br />
-          </span>
-        )}
-        {item.weight !== undefined && (
-          <span>
-            <strong>Weight:</strong> {item.weight} lb
-            <br />
-          </span>
-        )}
-        {item.variant && (
-          <span>
-            <strong>Variant:</strong> Yes
-            <br />
-          </span>
-        )}
-      </div>
-      {item.desc && item.desc.length > 0 && (
-        <div className="text-gray-200 text-sm whitespace-pre-wrap mb-2">
-          {item.desc.map((d, i) => (
-            <p key={i}>{d}</p>
-          ))}
+    <div className="bg-gray-900 rounded-lg p-6 shadow-lg">
+      <h2 className="text-2xl font-bold mb-2 text-[#b87333]">{item.name}</h2>
+      {item.cost && (
+        <div className="mb-2">
+          <strong>Cost:</strong> {renderCost(item.cost)}
         </div>
       )}
-      {item.special && item.special.length > 0 && (
-        <div className="text-gray-200 text-sm whitespace-pre-wrap mb-2">
-          <strong>Special:</strong>
-          {item.special.map((s, i) => (
-            <p key={i}>{s}</p>
-          ))}
+      {item.weight && (
+        <div className="mb-2">
+          <strong>Weight:</strong> {item.weight}
         </div>
       )}
-      {item.equipment && renderEquipmentList(item.equipment)}
-      {item.image && (
-        <img
-          src={
-            item.image.startsWith("/api/images")
-              ? `https://www.dnd5eapi.co${item.image}`
-              : item.image
-          }
-          alt={item.name}
-          className="w-32 h-32 object-contain rounded border mt-2"
-        />
-      )}
-      {item.variants && item.variants.length > 0 && (
-        <div className="text-gray-200 text-sm whitespace-pre-wrap mb-2">
-          <strong>Variants:</strong> {item.variants.join(", ")}
+      {item.equipment_category && (
+        <div className="mb-2">
+          <strong>Category:</strong> {item.equipment_category.name}
         </div>
       )}
-      {item.contents && item.contents.length > 0 && (
-        <div className="text-gray-200 text-sm whitespace-pre-wrap mb-2">
-          <strong>Contents:</strong>
-          <ul className="list-disc ml-4">
-            {item.contents.map((c, i) => (
-              <li key={i}>{c.name || c.index}</li>
-            ))}
-          </ul>
-        </div>
+      {item.contents && renderEquipmentList(item.contents)}
+      {/* Add to My Items Button */}
+      {currentUserId && (
+        <button
+          onClick={handleAddItem}
+          disabled={added}
+          className={`mt-4 px-4 py-2 rounded font-semibold ${
+            added
+              ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+              : "bg-[#b87333] text-white hover:bg-[#e5e4e2] hover:text-[#b87333] transition"
+          }`}
+        >
+          {added ? "Added!" : "Add to My Items"}
+        </button>
       )}
+      {error && <div className="text-red-400 mt-2">{error}</div>}
     </div>
   );
 }
